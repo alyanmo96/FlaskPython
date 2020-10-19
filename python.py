@@ -458,7 +458,7 @@ Draw the following pattern using for loops:
 ***
 ****
 *****
-""""
+"""
 rows = 6
 for num in range(rows):
     for i in range(num):
@@ -466,7 +466,7 @@ for num in range(rows):
     print(" ")
     
     
-#30    
+   
 
 
 
