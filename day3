@@ -1,0 +1,234 @@
+from random import randint
+
+class Game():
+    life_matrix = []
+
+    def __init__(self,value):
+        Game.life_matrix = []
+        Game.value=value
+
+    def bulid_the_random_life_matrix(self):
+        for i in range(0,self.value):
+            field = []
+            for j in range(0,self.value):
+                x = randint(0, 1)
+                field.append(x)
+            Game.life_matrix.append(field)
+        return Game.life_matrix
+
+    def print_the_init_matrix(self):
+        for i in range(self.value):
+                print(Game.life_matrix[i])
+
+############################################# check neighbours  functions###############################################
+    def check_left_neighbour(self,i,j):
+        if j==0:# no neighbour for this element on the left side
+            return 0
+        else:
+            if Game.life_matrix[i][j-1]==0:
+                return 0
+            elif Game.life_matrix[i][j-1]==1:
+                return 1
+
+    def check_right_neighbour(self,i,j):
+        rigth_side=value-1
+        if j==rigth_side:# no neighbour for this element on the right side
+            return 0
+        else:
+            if Game.life_matrix[i][j+1]==0:
+                return 0
+            elif Game.life_matrix[i][j+1]==1:
+                return 1
+
+    def check_up_neighbour(self,i,j):
+        if i==0:# no neighbour for this element on the up side
+            return 0
+        else:
+            if Game.life_matrix[i-1][j]==0:
+                return 0
+            elif Game.life_matrix[i-1][j]==1:
+                return 1
+
+    def check_down_neighbour(self,i,j):
+        last_row=value-1
+        if i==last_row:# no neighbour for this element on the down side
+            return 0
+        else:
+            if Game.life_matrix[i+1][j]==0:
+                return 0
+            elif Game.life_matrix[i+1][j]==1:
+                return 1
+
+########################################################################################################################
+    def print_the_new_matrix_life(self):
+        print("Next matrix:")
+        for index in Game.life_matrix:
+            print(index)
+
+    def create_new_matrix_game_life(self):
+        new_life_matrix=[]
+        count_of_live_neighbours=0
+        for i in range(0,self.value):
+            field = []
+            for j in range(0,self.value):
+                count_of_live_neighbours+=Game.check_left_neighbour(self,i,j)
+                count_of_live_neighbours+=Game.check_right_neighbour(self,i,j)
+                count_of_live_neighbours+=Game.check_up_neighbour(self,i,j)
+                count_of_live_neighbours+=Game.check_down_neighbour(self,i,j)
+                # new cell init check life by count of neighbours
+                if count_of_live_neighbours<2:
+                    field.append(0)
+                elif count_of_live_neighbours>=2 and count_of_live_neighbours<=3:
+                    field.append(1)
+                elif count_of_live_neighbours>3:
+                    field.append(0)
+                elif count_of_live_neighbours==3:
+                    field.append(1)
+                count_of_live_neighbours=0
+            new_life_matrix.append(field)
+        return new_life_matrix
+
+#method to check if the game is done
+    def chek_continue_matrix_game_life(self):
+        res = any(1 in sub for sub in Game.life_matrix)
+        while res==True:
+            Game.life_matrix=Game.create_new_matrix_game_life(self)
+            Game.print_the_new_matrix_life(self)
+            res = any(1 in sub for sub in Game.life_matrix)
+#################### out the class
+value = randint(3, 15)
+while value%3!=0:
+      value = randint(3,15)
+
+print("matrix rows&column size choosen by random value is equal to :",value)
+game_of_life = Game(value)
+game_of_life.bulid_the_random_life_matrix()
+print("print the init matrix:")
+game_of_life.print_the_init_matrix()
+game_of_life.chek_continue_matrix_game_life()
+
+
+
+
+
+
+
+
+#/////////////////////////////                  E                 /////////////////////////////
+#/////////////////////////////                  X                 /////////////////////////////
+
+#/////////////////////////////                  T                 /////////////////////////////
+#/////////////////////////////                  W                 /////////////////////////////
+#/////////////////////////////                  O                 /////////////////////////////
+
+
+
+##                  NEED TO CONTINUE
+
+
+###################################         Animal class
+class Animal():
+    def __init__(self,name,size,speed,animal_sign,animal_loaction_on_board):
+        Animal.size=size
+        Animal.speed=speed
+        Animal.animal_sign=animal_sign
+        Animal.animal_loaction_on_board=animal_loaction_on_board
+        print("name of animal=",name," size:",size," speed:",speed," the number of this animal on board is:",animal_sign," location on board by index:",animal_loaction_on_board)
+    def get_animal_location(self):
+        return Animal.animal_loaction_on_board
+    def set_animal_location(self,new_location):
+        Food.food_loaction_on_board=new_location
+
+###################################         Playground board class
+class Playground():
+    board_of_life_animal_and_search_food = []
+
+    def __init__(self,value):
+        Playground.board_of_life_animal_and_search_food = []
+        Playground.value=value
+
+    def bulid_the_random_life_animal_and_search_food(self):
+        for i in range(0,self.value):
+            field = []
+            for j in range(0,self.value):
+                x = 0
+                field.append(x)
+            Playground.board_of_life_animal_and_search_food.append(field)
+        return Playground.board_of_life_animal_and_search_food
+
+    def print_the_init_matrix_board(self):
+        for i in range(self.value):
+                print(Playground.board_of_life_animal_and_search_food[i])
+
+###################################         Food class
+class Food():
+    def __init__(self,name,food_loaction_on_board):
+        Food.name=name
+        Food.food_loaction_on_board=food_loaction_on_board
+        print("name of food=",name," food location on board by index: ",food_loaction_on_board)
+    def get_food_location(self):
+        return Food.food_loaction_on_board
+    def set_food_location(self):
+        Food.food_loaction_on_board=-1
+
+board=Playground(3)
+board.bulid_the_random_life_animal_and_search_food()
+print("init the board map")
+board.print_the_init_matrix_board()
+print("------------------------------------animal init-----------------------------------------------------------")
+
+################################# locations of animals on board
+animal_one_loaction_on_board = randint(0, 8)
+animal_two_loaction_on_board = randint(0, 8)
+animal_three_loaction_on_board = randint(0, 8)
+
+while animal_two_loaction_on_board==animal_one_loaction_on_board:
+    animal_two_loaction_on_board = randint(0, 8)
+
+while animal_two_loaction_on_board==animal_three_loaction_on_board or animal_three_loaction_on_board==animal_one_loaction_on_board:
+    animal_three_loaction_on_board = randint(0, 8)
+
+animal1=Animal("lion",6,7,1,animal_one_loaction_on_board)
+animal2=Animal("sheep",3,4,2,animal_two_loaction_on_board)
+animal3=Animal("rabbit",1,9,3,animal_three_loaction_on_board)
+
+print("---------------------------------food init--------------------------------------------------------------")
+
+#################################food location on board
+food_one_loaction_on_board = randint(0, 8)
+food_two_loaction_on_board = randint(0, 8)
+food_three_loaction_on_board = randint(0, 8)
+
+while food_one_loaction_on_board==animal_one_loaction_on_board or food_one_loaction_on_board==animal_two_loaction_on_board or food_one_loaction_on_board==animal_three_loaction_on_board:
+    food_one_loaction_on_board = randint(0, 8)
+
+while food_two_loaction_on_board==animal_one_loaction_on_board or food_two_loaction_on_board==animal_two_loaction_on_board or food_two_loaction_on_board==animal_three_loaction_on_board or food_two_loaction_on_board==food_one_loaction_on_board:
+    food_two_loaction_on_board = randint(0, 8)
+
+while food_three_loaction_on_board==animal_one_loaction_on_board or food_three_loaction_on_board==animal_two_loaction_on_board or food_three_loaction_on_board==animal_three_loaction_on_board or food_three_loaction_on_board==food_one_loaction_on_board or food_three_loaction_on_board==food_two_loaction_on_board:
+    food_three_loaction_on_board = randint(0, 8)
+
+food1=Food("pizza",food_one_loaction_on_board)
+food2=Food("tomatoo",food_two_loaction_on_board)
+food3=Food("cheeze",food_three_loaction_on_board)
+
+def animal_eat_food_method(animal,i,j):
+    print()
+    if food1.get_food_location() !=-1:
+        if food1.get_food_location()==i-1 or food1.get_food_location()==i+1 or food1.get_food_location()==j-1 or food1.get_food_location()==j+1:
+            animal.set_animal_location(food1.get_food_location())
+            food1.set_food_location()
+            print("1")
+    if food2.get_food_location() !=-1:
+        if food2.get_food_location()==i-1 or food2.get_food_location()==i+1 or food2.get_food_location()==j-1 or food2.get_food_location()==j+1:
+            animal.set_animal_location(food2.get_food_location())
+            food2.set_food_location()
+            print("2")
+    if food3.get_food_location() !=-1:
+        if food3.get_food_location()==i-1 or food3.get_food_location()==i+1 or food3.get_food_location()==j-1 or food3.get_food_location()==j+1:
+            animal.set_animal_location(food3.get_food_location())
+            food3.set_food_location()
+            print("3")
+
+
+animal_eat_food_method(animal1,2,1)
