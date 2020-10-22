@@ -1,0 +1,291 @@
+# three ex
+
+
+# the weather ex.... insert location or the date&location for a specific
+
+import argparse
+import re
+import requests
+import json
+
+parser=argparse.ArgumentParser()
+parser.add_argument('xDate')
+args=parser.parse_args()
+
+#api_key = "ca906cb4997343508e7165953202010"
+url="http://api.weatherapi.com/v1/current.json?key=ca906cb4997343508e7165953202010"
+regex = re.compile('[/.:]')
+if(regex.search(args.xDate) == None):
+        print("location you insert: ",args.xDate)
+        url+="&q="
+        url+=args.xDate
+else:
+    print("date you insert: ",args.xDate)
+    user_location=input("you also have to insert a location: ")
+    url+="&dt="
+    url+=args.xDate
+    url+="&q="
+    url+=user_location
+
+
+response = requests.get(url)
+data = json.loads(response.text)
+print("current temp: ",data['current']['temp_c'])
+
+
+
+
+#---------------------------------------------------- PYgame algorithm
+
+"""
+i tried to download the pygame, but it failed each time i try
+"""
+"""
+import algorithms
+import time
+import os
+import sys
+import pygame
+import random
+
+
+
+class Algorithm:
+    def __init__(self, name):
+        self.array = random.sample(range(512), 512) # Random array of size 512
+        self.name = name # Get name of the variable
+
+    def update_display(self, swap1=None, swap2=None):
+        import visualizer
+        visualizer.update(self, swap1, swap2) # pass the indexes to be swapped into the visualizer
+
+    def run(self): # Start the timer and run the algorithm
+        self.start_time = time.time()
+        self.algorithm()
+        time_elapsed = time.time() - self.start_time
+        return self.array, time_elapsed
+
+
+# merge sort
+class MergeSort(Algorithm):
+    def __init__(self):
+        super().__init__("MergeSort")
+
+    def algorithm(self, array=[]):
+        if array == []:
+            array = self.array
+        if len(array) < 2:
+            return array
+        mid = len(array) // 2
+        left = self.algorithm(array[:mid])
+        right = self.algorithm(array[mid:])
+        return self.merge(left, right)
+
+    def merge(self, left, right):
+        result = []
+        i, j = 0, 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+            self.update_display()
+        result += left[i:]
+        result += right[j:]
+        self.array = result
+        self.update_display()
+        return result
+
+
+class BubbleSort(Algorithm):
+    def __init__(self):
+        super().__init__("BubbleSort")
+
+    def algorithm(self):
+        for i in range(len(self.array)):
+            for j in range(len(self.array)-1-i):
+                if self.array[j] > self.array[j+1]:
+                    self.array[j], self.array[j+1] = self.array[j+1], self.array[j]
+            self.update_display(self.array[j], self.array[j+1])
+
+"""
+
+
+
+
+
+
+### still work on it
+
+########################################################      The Labyrinth
+
+x_1=[['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#']]
+
+print("display the wall: ")
+for value in x_1:
+    print(value)
+print("---------------------------------------------------------------------------------------------")
+x_2=[['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#'],
+ ['#' 'S' '#'F' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' ' ' '#' '#' '#' '#' '#' '#' '#' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#' ' ' '#'],
+ ['#' '#' '#' ' ' '#' '#' '#' ' ' '#' ' ' '#'],
+ ['#' ' ' '#' ' ' '#' ' ' '#' ' ' '#' ' ' '#'],
+ ['#' ' ' '#' ' ' '#' ' ' '#' ' ' '#' ' ' '#'],
+ ['#' ' ' '#' ' ' ' ' ' ' '#' ' ' ' ' ' ' '#'],
+ ['#' ' ' '#' '#' '#' '#' '#' '#' '#' ' ' '#'],
+ ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
+ ['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#']]
+print("display the ground: ")
+for value in x_2:
+    print(value)
+print("---------------------------------------------------------------------------------------------")
+
+from enum import Enum
+#Use Enum to store the wall, the ground, the start and finish.
+class C(Enum):
+    wall=[[1,2],
+              [2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],
+              [3,8],
+              [4,1],[4,2],[4,4],[4,5],[4,6],[4,8],
+              [5,2],[5,4],[5,6],[5,8],
+              [6,2],[6,4],[6,6],[6,8],
+              [7,2],[7,5],
+              [8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8]
+              ]
+    wall_sign="#"
+    ground=[[1,1],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],
+                [2,1],[2,9],
+                [3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,9],
+                [4,3],[4,7],[4,9],
+                [5,1],[5,3],[5,5],[5,7],[5,9],
+                [6,1],[6,3],[6,5],[6,7],[6,9],
+                [7,1],[7,3],[7,4],[7,6],[7,7],[7,8],[7,9],
+                [8,1],[8,9],
+                [9,1],[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9],
+        ]
+    start=[1,1]
+    finish=[1,3]
+
+    def return_list_of_wall(self):
+        return C.wall
+
+list_of_road_herzontial=[]
+list_of_road_vertical=[]
+list_of_road=[]
+list_of_ground=[]
+list_of_wall=[]
+start=[]
+finish=[]
+
+if __name__ == "__main__":
+    list_of_ground=C.ground.value
+    list_of_wall=C.wall.value
+    start=C.start.value
+    finish=C.finish.value
+
+
+def check_if_there_is_down_road(i,j):
+    for index_i in list_of_wall:
+        if index_i[0]==i+1 and index_i[1]==j:
+            return -1
+    return 1
+
+
+def check_if_there_is_right_road(i,j):
+    for index_i in list_of_wall:
+        if index_i[0]==i and index_i[1]==j:
+            return -1
+    return 1
+
+for i in range(1,10):
+    for j in range(1,10):
+        if check_if_there_is_down_road(i,j)==1:
+            list_of_road_herzontial.append([i,j])
+
+for i in range(1,10):
+    for j in range(1,10):
+        if check_if_there_is_right_road(i,j)==1:
+            list_of_road_vertical.append([i,j])
+
+def go_right(i,j):
+    for index_i in list_of_wall:
+        if index_i[0]==i and index_i[1]==j+1:
+            return 1
+    return -1
+
+def go_left(i,j):
+    for index_i in list_of_wall:
+        if index_i[0]==i and index_i[1]==j-1:
+            return 1
+    return -1
+
+def go_down(i,j):
+    for index_i in list_of_road_vertical:
+   #     print("check: [",index_i[0],"][",index_i[1],"]")
+        if index_i[0]==i+1 and index_i[1]==j:
+            return 1
+    return -1
+
+#print(list_of_ground)
+def continue_down():
+    
+
+
+last_go_index=-1
+
+for i in list_of_ground:
+        cant_go_down=-1
+        cant_go_up=-1
+        cant_go_left=-1
+        cant_go_right=-1
+        go_to_right=-1
+        if i[0]==last_go_index:
+            continue
+        if i[0]==9 or i[1]==9:
+            continue
+        print("[",i[0],"][",i[1],"]")
+        list_of_road.append([i[0],i[1]])
+
+        if go_down(i[0],i[1])==1:
+            print("can go down")
+            last_go_index=i[0]
+
+        else:
+            print("cant go down")
+            cant_go_down=1
+            print("go to check left","[",i[0],"][",i[1],"]")
+            if go_left(i[0],i[1])==1 and go_to_right==-1:
+                print("can go left")
+            elif go_left(i[0],i[1])==-1 and go_to_right==-1:
+                print("cant go left")
+                cant_go_left=1
+                print("go to check right","[",i[0],"][",i[1],"]")
+                if go_right(i[0],i[1])==-1:
+                    print("can go right")
+                    go_to_right=1
+                else:
+                    print("cant go right")
+                    cant_go_right=1
+            if cant_go_left==1 and cant_go_right==1:
+                list_of_road.pop()
+
+#print(list_of_road_vertical)
+#print(list_of_road_herzontial)
+
+print(list_of_road)
+
+
+
