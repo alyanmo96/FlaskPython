@@ -112,6 +112,7 @@ class BubbleSort(Algorithm):
 
 """
 
+
 ########################################################      The Labyrinth
 x_1=[['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#'],
  ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
@@ -158,7 +159,7 @@ class C(Enum):
               [7,2],[7,5],
               [8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8]
               ]
-    ground=[[1,1],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],
+    ground=[[1,1],[1,4],[1,3],[1,5],[1,6],[1,7],[1,8],[1,9],
                 [2,1],[2,9],
                 [3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,9],
                 [4,3],[4,7],[4,9],
@@ -199,6 +200,7 @@ if __name__ == "__main__":
     maze=C.maze.value
 
 
+
 print("list of ground ",list_of_ground)
 print("list of walls ",list_of_wall)
 print("the start elements ",start)
@@ -208,9 +210,15 @@ print("")
 print("                                                    start                                              ")
 print("")
 
-def check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,was_on_up,was_on_down):
-    print("list_of_road   ",list_of_road)
 
+def check_if_can_go_from_this_index(start_the_road_search,i,j,was_on_right,was_on_left,was_on_up,was_on_down):
+    if start_the_road_search==1 and len(list_of_road)<2:#no more steps and we did not reach the goal
+        print("#-# no more steps and we did not reach the goal")
+        return
+
+    print("list_of_road   ",list_of_road)
+    if len(list_of_road)>5:
+        start_the_road_search=1
     if list_of_last_element[2]>2:
         print("stuck on special element")
         if [list_of_road[-1][0],list_of_road[-1][1]] not in list_of_reject_ground:
@@ -225,13 +233,13 @@ def check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,was_on_up,was_o
     list_of_last_element[1]=j
 
     if finish in list_of_road :
-        print("Yes, found the indexs of road : " , list_of_road)
+        print("Yes, found the indexs of road : \n" , list_of_road)
         return
     if check_if_can_go_down(i,j)==1 and was_on_up!=1:
         print("go down")
         i=list_of_road[-1][0]
         i+=1
-        check_if_can_go_from_this_index(i,j,-1,-1,was_on_up,1)
+        check_if_can_go_from_this_index(start_the_road_search,i,j,-1,-1,was_on_up,1)
         return
     if was_on_up==1:
         list_of_road.pop()
@@ -240,21 +248,21 @@ def check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,was_on_up,was_o
         print("go left")
         j=list_of_road[-1][1]
         j-=1
-        check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,-1,-1)
+        check_if_can_go_from_this_index(start_the_road_search,i,j,was_on_right,was_on_left,-1,-1)
         return
 
     if check_if_can_go_right(i,j)==1 and was_on_left!=1:
         print("go right")
         j=list_of_road[-1][1]
         j+=1
-        check_if_can_go_from_this_index(i,j,1,was_on_left,-1,-1)
+        check_if_can_go_from_this_index(start_the_road_search,i,j,1,was_on_left,-1,-1)
         return
 
     if check_if_can_go_up(i,j)==1 and was_on_down!=1:
         print("go up")
         i=list_of_road[-1][0]
         i-=1
-        check_if_can_go_from_this_index(i,j,-1,-1,1,-1)
+        check_if_can_go_from_this_index(start_the_road_search,i,j,-1,-1,1,-1)
         return
 
     if len(list_of_road)<=0:
@@ -271,15 +279,15 @@ def check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,was_on_up,was_o
         print((list_of_road[-1][0],list_of_road[-1][1]))
 
         if list_of_reject_ground[-1][0]!=list_of_road[-1][0] and list_of_reject_ground[-1][0]>list_of_road[-1][0]:#back up
-            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,-1,1,-1)
+            check_if_can_go_from_this_index(start_the_road_search,list_of_road[-1][0],list_of_road[-1][1],-1,-1,1,-1)
 
         elif list_of_reject_ground[-1][0]!=list_of_road[-1][0] and list_of_reject_ground[-1][0]<list_of_road[-1][0]:#back down
-            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,-1,-1,1)
+            check_if_can_go_from_this_index(start_the_road_search,list_of_road[-1][0],list_of_road[-1][1],-1,-1,-1,1)
 
         elif list_of_reject_ground[-1][1]!=list_of_road[-1][1] and list_of_reject_ground[-1][1]>list_of_road[-1][1]:#back left:
-            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],1,-1,-1,-1)
+            check_if_can_go_from_this_index(start_the_road_search,list_of_road[-1][0],list_of_road[-1][1],1,-1,-1,-1)
         else:# back rigth
-            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,1,-1,-1)
+            check_if_can_go_from_this_index(start_the_road_search,list_of_road[-1][0],list_of_road[-1][1],-1,1,-1,-1)
 
 #####################################################UP
 def check_if_can_go_up(i,j):
@@ -331,4 +339,4 @@ def check_if_can_go_right(i,j):
 
 
 #####################################################AS MAIN AS
-check_if_can_go_from_this_index(1,1,-1,-1,-1,-1)
+check_if_can_go_from_this_index(-1,1,1,-1,-1,-1,-1)
