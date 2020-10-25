@@ -112,15 +112,7 @@ class BubbleSort(Algorithm):
 
 """
 
-
-
-
-
-
-### still work on it
-
 ########################################################      The Labyrinth
-
 x_1=[['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#'],
  ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
  ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
@@ -148,6 +140,7 @@ x_2=[['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#'],
  ['#' ' ' '#' '#' '#' '#' '#' '#' '#' ' ' '#'],
  ['#' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '#'],
  ['#' '#' '#' '#' '#' '#' '#' '#' '#' '#' '#']]
+
 print("display the ground: ")
 for value in x_2:
     print(value)
@@ -165,7 +158,6 @@ class C(Enum):
               [7,2],[7,5],
               [8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8]
               ]
-    wall_sign="#"
     ground=[[1,1],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],
                 [2,1],[2,9],
                 [3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,9],
@@ -174,118 +166,169 @@ class C(Enum):
                 [6,1],[6,3],[6,5],[6,7],[6,9],
                 [7,1],[7,3],[7,4],[7,6],[7,7],[7,8],[7,9],
                 [8,1],[8,9],
-                [9,1],[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9],
+                [9,1],[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9]
         ]
+    maze=[[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],
+                [2,1],[2,9],[2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],
+                [3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,9],[3,8],
+                [4,3],[4,7],[4,9],[4,1],[4,2],[4,4],[4,5],[4,6],[4,8],
+                [5,1],[5,3],[5,5],[5,7],[5,9],[5,2],[5,4],[5,6],[5,8],
+                [6,1],[6,3],[6,5],[6,7],[6,9],[6,2],[6,4],[6,6],[6,8],
+                [7,1],[7,2],[7,3],[7,4],[7,5],[7,6],[7,7],[7,8],[7,9],
+                [8,1],[8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],
+                [9,1],[9,2],[9,3],[9,4],[9,5],[9,6],[9,7],[9,8],[9,9]
+    ]
     start=[1,1]
     finish=[1,3]
+    ##      ##      ##      ##      ##      ##      ##      ##      ##      ##
 
-    def return_list_of_wall(self):
-        return C.wall
-
-list_of_road_herzontial=[]
-list_of_road_vertical=[]
-list_of_road=[]
 list_of_ground=[]
 list_of_wall=[]
+list_of_reject_ground=[]
+maze=[]
 start=[]
 finish=[]
+list_of_road=[]
+list_of_last_element=[-1,-1,0]# help list to know any stuck element
 
 if __name__ == "__main__":
     list_of_ground=C.ground.value
     list_of_wall=C.wall.value
     start=C.start.value
     finish=C.finish.value
+    maze=C.maze.value
 
 
-def check_if_there_is_down_road(i,j):
+print("list of ground ",list_of_ground)
+print("list of walls ",list_of_wall)
+print("the start elements ",start)
+print("the finish elements ",finish)
+print("the list of elements of the right road at the start ",list_of_road)
+print("")
+print("                                                    start                                              ")
+print("")
+
+def check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,was_on_up,was_on_down):
+    print("list_of_road   ",list_of_road)
+
+    if list_of_last_element[2]>2:
+        print("stuck on special element")
+        if [list_of_road[-1][0],list_of_road[-1][1]] not in list_of_reject_ground:
+            list_of_reject_ground.append([list_of_road[-1][0],list_of_road[-1][1]])
+        list_of_road.pop()
+        list_of_last_element[2]=0
+        print(list_of_road)
+
+    if i==list_of_last_element[0] and j==list_of_last_element[1]:
+        list_of_last_element[2]+=1
+    list_of_last_element[0]=i
+    list_of_last_element[1]=j
+
+    if finish in list_of_road :
+        print("Yes, found the indexs of road : " , list_of_road)
+        return
+    if check_if_can_go_down(i,j)==1 and was_on_up!=1:
+        print("go down")
+        i=list_of_road[-1][0]
+        i+=1
+        check_if_can_go_from_this_index(i,j,-1,-1,was_on_up,1)
+        return
+    if was_on_up==1:
+        list_of_road.pop()
+
+    if check_if_can_go_left(i,j)==1 and was_on_right!=1:
+        print("go left")
+        j=list_of_road[-1][1]
+        j-=1
+        check_if_can_go_from_this_index(i,j,was_on_right,was_on_left,-1,-1)
+        return
+
+    if check_if_can_go_right(i,j)==1 and was_on_left!=1:
+        print("go right")
+        j=list_of_road[-1][1]
+        j+=1
+        check_if_can_go_from_this_index(i,j,1,was_on_left,-1,-1)
+        return
+
+    if check_if_can_go_up(i,j)==1 and was_on_down!=1:
+        print("go up")
+        i=list_of_road[-1][0]
+        i-=1
+        check_if_can_go_from_this_index(i,j,-1,-1,1,-1)
+        return
+
+    if len(list_of_road)<=0:
+        return
+    else:
+
+        print("!!!!!!NO way you have to return back!!!!!!!!!!")
+        if [list_of_road[-1][0],list_of_road[-1][1]] not in list_of_reject_ground:
+            list_of_reject_ground.append([list_of_road[-1][0],list_of_road[-1][1]])
+        print("list_of_reject_ground:  ",list_of_reject_ground)
+        print("list_of_road before we pop the stuck element",list_of_road)
+        list_of_road.pop()
+        print("list_of_road after we pop the stuck element",list_of_road)
+        print((list_of_road[-1][0],list_of_road[-1][1]))
+
+        if list_of_reject_ground[-1][0]!=list_of_road[-1][0] and list_of_reject_ground[-1][0]>list_of_road[-1][0]:#back up
+            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,-1,1,-1)
+
+        elif list_of_reject_ground[-1][0]!=list_of_road[-1][0] and list_of_reject_ground[-1][0]<list_of_road[-1][0]:#back down
+            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,-1,-1,1)
+
+        elif list_of_reject_ground[-1][1]!=list_of_road[-1][1] and list_of_reject_ground[-1][1]>list_of_road[-1][1]:#back left:
+            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],1,-1,-1,-1)
+        else:# back rigth
+            check_if_can_go_from_this_index(list_of_road[-1][0],list_of_road[-1][1],-1,1,-1,-1)
+
+#####################################################UP
+def check_if_can_go_up(i,j):
+    if  i<=1 or [i,j] in list_of_reject_ground:
+        return -1
+    if [i,j]not  in list_of_road and [i,j] not in list_of_wall:
+        list_of_road.append([i,j])
+    for index_i in list_of_wall:
+        if index_i[0]==i-1 and index_i[1]==j:
+            return -1
+    return 1
+
+#####################################################DOWN
+def check_if_can_go_down(i,j):
+    if i >= 9 or [i,j] in list_of_reject_ground:
+        return -1
     for index_i in list_of_wall:
         if index_i[0]==i+1 and index_i[1]==j:
             return -1
+    if [i,j] not in list_of_wall and [i,j] not in list_of_road:
+        list_of_road.append([i,j])
     return 1
 
+#####################################################LEFT
+def check_if_can_go_left(i,j):
+    if [i,j] in list_of_road:
+        return -1
+    if j > 9 or j<=1 or [i,j] in list_of_reject_ground or [i,j] in list_of_road:
 
-def check_if_there_is_right_road(i,j):
-    for index_i in list_of_wall:
-        if index_i[0]==i and index_i[1]==j:
-            return -1
-    return 1
-
-for i in range(1,10):
-    for j in range(1,10):
-        if check_if_there_is_down_road(i,j)==1:
-            list_of_road_herzontial.append([i,j])
-
-for i in range(1,10):
-    for j in range(1,10):
-        if check_if_there_is_right_road(i,j)==1:
-            list_of_road_vertical.append([i,j])
-
-def go_right(i,j):
-    for index_i in list_of_wall:
-        if index_i[0]==i and index_i[1]==j+1:
-            return 1
-    return -1
-
-def go_left(i,j):
+        return -1
     for index_i in list_of_wall:
         if index_i[0]==i and index_i[1]==j-1:
-            return 1
-    return -1
+            return -1
+    if [i,j] not in list_of_wall and[i,j] not in list_of_road:
+        list_of_road.append([i,j])
+    return 1
 
-def go_down(i,j):
-    for index_i in list_of_road_vertical:
-   #     print("check: [",index_i[0],"][",index_i[1],"]")
-        if index_i[0]==i+1 and index_i[1]==j:
-            return 1
-    return -1
-
-#print(list_of_ground)
-def continue_down():
-    
-
-
-last_go_index=-1
-
-for i in list_of_ground:
-        cant_go_down=-1
-        cant_go_up=-1
-        cant_go_left=-1
-        cant_go_right=-1
-        go_to_right=-1
-        if i[0]==last_go_index:
-            continue
-        if i[0]==9 or i[1]==9:
-            continue
-        print("[",i[0],"][",i[1],"]")
-        list_of_road.append([i[0],i[1]])
-
-        if go_down(i[0],i[1])==1:
-            print("can go down")
-            last_go_index=i[0]
-
-        else:
-            print("cant go down")
-            cant_go_down=1
-            print("go to check left","[",i[0],"][",i[1],"]")
-            if go_left(i[0],i[1])==1 and go_to_right==-1:
-                print("can go left")
-            elif go_left(i[0],i[1])==-1 and go_to_right==-1:
-                print("cant go left")
-                cant_go_left=1
-                print("go to check right","[",i[0],"][",i[1],"]")
-                if go_right(i[0],i[1])==-1:
-                    print("can go right")
-                    go_to_right=1
-                else:
-                    print("cant go right")
-                    cant_go_right=1
-            if cant_go_left==1 and cant_go_right==1:
-                list_of_road.pop()
-
-#print(list_of_road_vertical)
-#print(list_of_road_herzontial)
-
-print(list_of_road)
+#####################################################RIGHT
+def check_if_can_go_right(i,j):
+    if j >= 9:
+        return -1
+    for index_i in list_of_wall:
+        if index_i[0]==i and index_i[1]==j+1:
+            return -1
+    if [i,j] not in list_of_road and [i,j] not in list_of_reject_ground and [i,j] not in list_of_wall:
+        list_of_road.append([i,j])
+    return 1
 
 
 
+#####################################################AS MAIN AS
+check_if_can_go_from_this_index(1,1,-1,-1,-1,-1)
